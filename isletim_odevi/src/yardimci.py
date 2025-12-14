@@ -1,1 +1,1 @@
-# Ortak metrik ve yardımcı fonksiyonlar
+#yardımcı fonksiyonlar
