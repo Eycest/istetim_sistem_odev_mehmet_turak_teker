@@ -1,25 +1,26 @@
 from yardimci import sure_hesapla, ort_maks, kac_tane_bitti, cpu_oran, degisim_say
 
 def sjf_kesmesiz_calistir(surecler):
-    zaman = 0
-    tablo = []
     kalanlar = surecler[:]
+    tablo = []
+    zaman = 0
 
     while kalanlar:
-        gelenler = [s for s in kalanlar if s["g"] <= zaman]
+        hazir = [s for s in kalanlar if s["g"] <= zaman]
 
-        if not gelenler:
+        if not hazir:
             siradaki = min(kalanlar, key=lambda x: x["g"])
-            tablo.append((zaman, "IDLE", siradaki["g"]))
-            zaman = siradaki["g"]
+            if zaman < siradaki["g"]:
+                tablo.append((zaman, "IDLE", siradaki["g"]))
+                zaman = siradaki["g"]
             continue
 
-        secilen = min(gelenler, key=lambda x: x["s"])
+        sec = min(hazir, key=lambda x: (x["s"], x["g"], x["id"]))
         bas = zaman
-        bit = zaman + secilen["s"]
-        tablo.append((bas, secilen["id"], bit))
+        bit = zaman + sec["s"]
+        tablo.append((bas, sec["id"], bit))
         zaman = bit
-        kalanlar.remove(secilen)
+        kalanlar.remove(sec)
 
     return tablo
 
@@ -27,7 +28,7 @@ def sjf_kesmesiz_calistir(surecler):
 def sjf_kesmesiz_rapor(surecler, dosya_adi):
     tablo = sjf_kesmesiz_calistir(surecler)
 
-    bekle, donus = sure_hesapla(tablo)
+    bekle, donus = sure_hesapla(tablo, surecler)
     bek_ort, bek_maks = ort_maks(bekle)
     don_ort, don_maks = ort_maks(donus)
     thr = kac_tane_bitti(tablo, [50, 100, 150, 200])
