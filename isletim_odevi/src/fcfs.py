@@ -1,11 +1,11 @@
 from yardimci import sure_hesapla, ort_maks, kac_tane_bitti, cpu_oran, degisim_say
 
 def fcfs_calistir(surecler):
-    surecler = sorted(surecler, key=lambda x: x["g"])
+    liste = sorted(surecler, key=lambda x: x["g"])
     zaman = 0
     tablo = []
 
-    for s in surecler:
+    for s in liste:
         if zaman < s["g"]:
             tablo.append((zaman, "IDLE", s["g"]))
             zaman = s["g"]
@@ -21,7 +21,7 @@ def fcfs_calistir(surecler):
 def fcfs_rapor(surecler, dosya_adi):
     tablo = fcfs_calistir(surecler)
 
-    bekle, donus = sure_hesapla(tablo)
+    bekle, donus = sure_hesapla(tablo, surecler)
     bek_ort, bek_maks = ort_maks(bekle)
     don_ort, don_maks = ort_maks(donus)
     thr = kac_tane_bitti(tablo, [50, 100, 150, 200])
