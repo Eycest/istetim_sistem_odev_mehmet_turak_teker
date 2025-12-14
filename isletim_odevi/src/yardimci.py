@@ -15,25 +15,26 @@ def dosyadan_cek(yol):
     return liste
 
 
-def sure_hesapla(zamanlar):
-    ilk = {}
-    son = {}
-    calisti = {}
+def sure_hesapla(zamanlar, surecler):
+    gelis = {}
+    toplam_is = {}
 
-    for b, p, s in zamanlar:
+    for s in surecler:
+        gelis[s["id"]] = s["g"]
+        toplam_is[s["id"]] = s["s"]
+
+    son = {}
+    for _, p, bit in zamanlar:
         if p == "IDLE":
             continue
-        if p not in ilk:
-            ilk[p] = b
-        son[p] = s
-        calisti[p] = calisti.get(p, 0) + (s - b)
+        son[p] = bit
 
     bekle = {}
     donus = {}
 
-    for p in son:
-        donus[p] = son[p]
-        bekle[p] = donus[p] - calisti[p]
+    for pid in son:
+        donus[pid] = son[pid] - gelis.get(pid, 0)
+        bekle[pid] = donus[pid] - toplam_is.get(pid, 0)
 
     return bekle, donus
 
@@ -54,8 +55,8 @@ def kac_tane_bitti(zamanlar, noktalar):
     cikti = {}
     for n in noktalar:
         bitti = []
-        for _, p, s in zamanlar:
-            if p != "IDLE" and s <= n and p not in bitti:
+        for _, p, bit in zamanlar:
+            if p != "IDLE" and bit <= n and p not in bitti:
                 bitti.append(p)
         cikti[n] = len(bitti)
     return cikti
@@ -78,8 +79,8 @@ def cpu_oran(zamanlar, cs_sure=0.001):
     top = 0
     bos = 0
 
-    for b, p, s in zamanlar:
-        fark = s - b
+    for b, p, bit in zamanlar:
+        fark = bit - b
         top += fark
         if p == "IDLE":
             bos += fark
