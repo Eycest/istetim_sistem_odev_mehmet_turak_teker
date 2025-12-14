@@ -156,7 +156,7 @@ def uret():
       if (ok) goster++;
     }});
 
-    sayac.textContent = `Görünen sonuç: ${goster}`;
+    sayac.textContent = `Görünen sonuç: ${{goster}}`;
   }}
 
   caseSec.addEventListener("change", filtrele);
